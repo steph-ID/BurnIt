@@ -29,6 +29,12 @@ struct FFlammableObjectData
 	float IgnitionTemperature = 250.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
+	float AutoIgnitionTemperature = 500.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Flammable Object")
+	float BurnTemperature = 1500.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Flammable Object")
 	bool WillBurn = true;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")

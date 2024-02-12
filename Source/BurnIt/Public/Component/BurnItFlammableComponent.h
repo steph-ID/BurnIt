@@ -37,6 +37,9 @@ public:
 	FFlammableObjectData GetFlammableObjectData() const { return FlammableObject; }
 	
 	UFUNCTION(BlueprintCallable)
+	float GetBurnTemperature() const { return FlammableObject.BurnTemperature; }
+	
+	UFUNCTION(BlueprintCallable)
 	ABurnItCharacter* GetBurnItCharacter() const;
 
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
@@ -87,5 +90,5 @@ private:
 	void ProcessPlayerDeath();
 	
 	UFUNCTION(BlueprintCallable)
-	static void SendPoints();
+	void SendPoints();
 };

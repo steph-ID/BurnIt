@@ -5,6 +5,7 @@
 
 #include "Actor/BurnItFlammableActor.h"
 #include "Character/BurnItCharacter.h"
+#include "Core/BurnItPlayerController.h"
 
 // Sets default values for this component's properties
 UBurnItFlammableComponent::UBurnItFlammableComponent()
@@ -96,6 +97,9 @@ void UBurnItFlammableComponent::Melt() const
 
 void UBurnItFlammableComponent::SendPoints()
 {
+	const ABurnItPlayerController* PC = Cast<ABurnItPlayerController>(GetWorld()->GetFirstPlayerController());
+	ABurnItPlayerState* PS = PC->GetPlayerState<ABurnItPlayerState>();
+	PS->SetPlayerScore(FlammableObject.PointValue);
 }
 
 // Called when the game starts

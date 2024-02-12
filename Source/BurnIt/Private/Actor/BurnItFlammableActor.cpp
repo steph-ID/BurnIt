@@ -3,6 +3,8 @@
 
 #include "Actor/BurnItFlammableActor.h"
 
+#include "Character/BurnItCharacter.h"
+
 // Sets default values
 ABurnItFlammableActor::ABurnItFlammableActor()
 {
@@ -17,10 +19,10 @@ ABurnItFlammableActor::ABurnItFlammableActor()
 	BurnDamageTimerDelegate.BindUFunction(this, FName("Burn"));
 }
 
-void ABurnItFlammableActor::StartBurning(float BurnDamage)
+void ABurnItFlammableActor::StartBurning()
 {
 	bIsOnFire = true;
-	Burn(BurnDamage);
+	Burn();
 }
 
 void ABurnItFlammableActor::StopBurning()
@@ -40,8 +42,9 @@ void ABurnItFlammableActor::StopBurning()
 	}
 }
 
-void ABurnItFlammableActor::Burn(float BurnDamage)
+void ABurnItFlammableActor::Burn()
 {
+	const float BurnDamage = GetBurnTemperature()/100.f;
 	FlammableComponent->AdjustHealth(-BurnDamage);
 	GetWorldTimerManager().SetTimer(BurnDamageTimerHandle, BurnDamageTimerDelegate, 1, true, -1);
 }

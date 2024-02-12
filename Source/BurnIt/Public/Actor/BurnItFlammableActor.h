@@ -37,17 +37,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UBurnItFlammableComponent* GetFlammableComponent() const { return FlammableComponent; }
 	
+	UFUNCTION(BlueprintCallable)
+	float GetBurnTemperature() const { return FlammableComponent->FlammableObject.BurnTemperature; }
+	
 	UFUNCTION(BlueprintNativeEvent)
 	void Ignite();
 	
 	UFUNCTION(BlueprintCallable)
-	void StartBurning(float BurnDamage);
+	void StartBurning();
 	
 	UFUNCTION(BlueprintCallable)
 	void StopBurning();
 	
 	UFUNCTION(BlueprintCallable)
-	void Burn(float BurnDamage);
+	void Burn();
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void TurnToAsh();
