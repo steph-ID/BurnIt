@@ -72,3 +72,7 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Whitelist only content files made by me
+Content/*
+!Content/GameData/*
