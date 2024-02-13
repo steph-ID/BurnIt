@@ -23,7 +23,10 @@ struct FFlammableObjectData
 	float PointValue = 10.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
-	float Temperature=23.f;
+	float CurrentTemperature = 23.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Flammable Object")
+	float BaseTemperature = 23.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
 	float IgnitionTemperature = 250.f;
@@ -77,10 +80,10 @@ public:
     float GetPointValue() const { return PointValue; }
 
     UFUNCTION(BlueprintCallable, Category = "Flammable Object")
-    float GetTemperature() const { return Temperature; }
+    float GetTemperature() const { return CurrentTemperature; }
 
     UFUNCTION(BlueprintCallable, Category = "Flammable Object")
-    void SetTemperature(float NewTemperature) { Temperature += NewTemperature; }
+    void SetTemperature(float NewTemperature) { CurrentTemperature += NewTemperature; }
 
     UFUNCTION(BlueprintCallable, Category = "Flammable Object")
     float GetIgnitionTemperature() const { return IgnitionTemperature; }

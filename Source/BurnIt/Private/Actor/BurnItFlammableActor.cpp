@@ -3,8 +3,6 @@
 
 #include "Actor/BurnItFlammableActor.h"
 
-#include "Character/BurnItCharacter.h"
-
 // Sets default values
 ABurnItFlammableActor::ABurnItFlammableActor()
 {
@@ -15,38 +13,6 @@ ABurnItFlammableActor::ABurnItFlammableActor()
 
 	//StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	//StaticMeshComponent->SetupAttachment(RootComponent);
-	
-	BurnDamageTimerDelegate.BindUFunction(this, FName("Burn"));
-}
-
-void ABurnItFlammableActor::StartBurning()
-{
-	bIsOnFire = true;
-	Burn();
-}
-
-void ABurnItFlammableActor::StopBurning()
-{
-	bIsOnFire = false;
-	GetWorldTimerManager().ClearTimer(BurnDamageTimerHandle);
-	if(FlammableComponent->GetHealth() == 0)
-	{
-		if(FMath::RandRange(0.f, 1.f) > ChanceToTurnToAsh)
-		{
-			DropAsh();
-		}
-		else
-		{
-			TurnToAsh();
-		}
-	}
-}
-
-void ABurnItFlammableActor::Burn()
-{
-	const float BurnDamage = GetBurnTemperature()/100.f;
-	FlammableComponent->AdjustHealth(-BurnDamage);
-	GetWorldTimerManager().SetTimer(BurnDamageTimerHandle, BurnDamageTimerDelegate, 1, true, -1);
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +30,10 @@ void ABurnItFlammableActor::Tick(float DeltaTime)
 }
 
 void ABurnItFlammableActor::Ignite_Implementation()
+{
+}
+
+void ABurnItFlammableActor::Extinguish_Implementation()
 {
 }
 

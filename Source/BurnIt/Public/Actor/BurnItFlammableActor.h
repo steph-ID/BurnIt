@@ -5,19 +5,20 @@
 #include "CoreMinimal.h"
 #include "BurnItActor.h"
 #include "Component/BurnItFlammableComponent.h"
-#include "GameFramework/Actor.h"
 #include "BurnItFlammableActor.generated.h"
+
+class UBurnItFlammableComponent;
 
 UCLASS()
 class BURNIT_API ABurnItFlammableActor : public AActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY()
 	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
-	float ChanceToTurnToAsh = 0.2f;
+	UPROPERTY(VisibleAnywhere, Category="Flammable Object")
+	UBurnItFlammableComponent* FlammableComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	float AshValue = 10.f;
@@ -38,19 +39,13 @@ public:
 	UBurnItFlammableComponent* GetFlammableComponent() const { return FlammableComponent; }
 	
 	UFUNCTION(BlueprintCallable)
-	float GetBurnTemperature() const { return FlammableComponent->FlammableObject.BurnTemperature; }
+	float GetBurnTemperature() const { return GetFlammableComponent()->GetFlammableObjectData().BurnTemperature; }
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void Ignite();
 	
-	UFUNCTION(BlueprintCallable)
-	void StartBurning();
-	
-	UFUNCTION(BlueprintCallable)
-	void StopBurning();
-	
-	UFUNCTION(BlueprintCallable)
-	void Burn();
+	UFUNCTION(BlueprintNativeEvent)
+	void Extinguish();
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void TurnToAsh();
@@ -64,11 +59,4 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere)
-	UBurnItFlammableComponent* FlammableComponent;
-
-private:
-	FTimerDelegate BurnDamageTimerDelegate;
-	FTimerHandle BurnDamageTimerHandle;
 };

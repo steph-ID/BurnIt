@@ -72,10 +72,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ignition Device|Fuel")
 	float FuelDepletionTickRate = 0.25f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ignition Device|Temperature")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ignition Device|CurrentTemperature")
 	float Temperature=1500.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ignition Device|Temperature")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ignition Device|CurrentTemperature")
 	UCurveFloat* DeviceHeatRamp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ignition Device")
