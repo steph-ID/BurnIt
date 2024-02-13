@@ -107,7 +107,11 @@ void UBurnItFlammableComponent::ProcessPlayerDeath()
 
 void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd)
 {
-	FlammableObject.CurrentTemperature += TempToAdd/100.f;
+	// Adjust the CurrentTemperature
+	AdjustCurrentTemperature(TempToAdd/100.f);
+
+	// Start time-to-cool timer
+	GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, GetTimeUntilCooling());
 	
 	if (FlammableObject.CurrentTemperature >= FlammableObject.IgnitionTemperature)
 	{
@@ -130,7 +134,7 @@ void UBurnItFlammableComponent::CatchFire()
 	GetFlammableActor()->Ignite();
 
 	// Start the burn damage DoT
-	GetWorld()->GetTimerManager().SetTimer(BurnDamageTimerHandle, BurnDamageTimerDelegate, 1, true, 0.f);
+	GetWorld()->GetTimerManager().SetTimer(BurnDamageTimerHandle, BurnDamageTimerDelegate, 1.f, true, 0.f);
 }
 
 void UBurnItFlammableComponent::ExtinguishFire()
@@ -143,10 +147,10 @@ void UBurnItFlammableComponent::ExtinguishFire()
 	// Stop the burn damage DoT
 	GetWorld()->GetTimerManager().ClearTimer(BurnDamageTimerHandle);
 
-	// If the object isn't destroyed/dead, being cooling to base temperature
+	// If the object isn't destroyed/dead, begin cooling to base temperature
 	if(GetHealth() > 0)
 	{
-		GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, true, CoolingDelay);
+		GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, true, GetTimeUntilCooling());
 	}
 }
 
@@ -165,13 +169,17 @@ void UBurnItFlammableComponent::Cool()
 {
 	if (GetCurrentTemperature() != GetBaseTemperature())
 	{
-		const float TempChange = (GetBaseTemperature()-GetCurrentTemperature())/12.f;
-		AdjustTemperature(TempChange);
+		const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingTickRate;
+		AdjustCurrentTemperature(TempChange);
 		
-		if (GetCurrentTemperature() <= GetBaseTemperature())
+		if (FMath::RoundToNegativeInfinity(GetCurrentTemperature()) <= GetBaseTemperature())
 		{
 			SetCurrentTemperature(GetBaseTemperature());
 			GetWorld()->GetTimerManager().ClearTimer(CoolingTimerHandle);
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, CoolingTickRate);
 		}
 	}
 	//ABurnItLevelDataManager* LevelDataManager =

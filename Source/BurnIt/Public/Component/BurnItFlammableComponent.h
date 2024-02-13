@@ -35,10 +35,7 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 	float ChanceToTurnToAsh = 0.2f;
 	
 	UPROPERTY(EditAnywhere, Category="Flammable Object")
-	float CoolingTickRate = 0.25f;
-	
-	UPROPERTY(EditAnywhere, Category="Flammable Object")
-	float CoolingDelay = 5.f;
+	float CoolingTickRate = 0.1f;
 
 public:	
 	// Sets default values for this component's properties
@@ -71,6 +68,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetBurnTemperature() const { return FlammableObject.BurnTemperature; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetTimeUntilCooling() const { return FlammableObject.TimeUntilCooling; }
 	
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const { return FlammableObject.Health; }
@@ -89,6 +89,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Flammable Object")
 	void SetCurrentTemperature(float NewCurrentTemperature) { FlammableObject.CurrentTemperature = NewCurrentTemperature; }
+
+	UFUNCTION(BlueprintCallable, Category = "Flammable Object")
+	void AdjustCurrentTemperature(float NewCurrentTemperature) { FlammableObject.CurrentTemperature += NewCurrentTemperature; }
 
 	UFUNCTION(BlueprintCallable, Category = "Flammable Object")
 	void SetBaseTemperature(float NewBaseTemperature) { FlammableObject.BaseTemperature = NewBaseTemperature; }
