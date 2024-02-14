@@ -134,10 +134,10 @@ protected:
 	 * Begin device use functions
 	 */
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent)
 	void StartUsing();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent)
 	void StopUsing();
 
 	UFUNCTION(BlueprintCallable)

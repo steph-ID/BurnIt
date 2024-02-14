@@ -32,7 +32,7 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 	ABurnItPlayerState* PlayerState = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
-	float ChanceToTurnToAsh = 0.2f;
+	float ChanceToTurnToAsh = 1.f;
 	
 	UPROPERTY(EditAnywhere, Category="Flammable Object")
 	float CoolingTickRate = 0.1f;
@@ -70,6 +70,9 @@ public:
 	float GetBurnTemperature() const { return FlammableObject.BurnTemperature; }
 
 	UFUNCTION(BlueprintCallable)
+	float GetIgnitionTemperature() const { return FlammableObject.IgnitionTemperature; }
+
+	UFUNCTION(BlueprintCallable)
 	float GetTimeUntilCooling() const { return FlammableObject.TimeUntilCooling; }
 	
 	UFUNCTION(BlueprintCallable)
@@ -81,6 +84,9 @@ public:
 	 * End getters
 	*/
 
+	/*
+	 * Begin setters
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Flammable Object")
 	void SetHealth(float NewHealth);
 
@@ -91,10 +97,13 @@ public:
 	void SetCurrentTemperature(float NewCurrentTemperature) { FlammableObject.CurrentTemperature = NewCurrentTemperature; }
 
 	UFUNCTION(BlueprintCallable, Category = "Flammable Object")
-	void AdjustCurrentTemperature(float NewCurrentTemperature) { FlammableObject.CurrentTemperature += NewCurrentTemperature; }
+	void SetBaseTemperature(float NewBaseTemperature) { FlammableObject.BaseTemperature = NewBaseTemperature; }
+	/*
+	 * End setters
+	*/
 
 	UFUNCTION(BlueprintCallable, Category = "Flammable Object")
-	void SetBaseTemperature(float NewBaseTemperature) { FlammableObject.BaseTemperature = NewBaseTemperature; }
+	void AdjustCurrentTemperature(float NewCurrentTemperature) { FlammableObject.CurrentTemperature += NewCurrentTemperature; }
 	
 	UFUNCTION(BlueprintCallable)
 	void AdjustHealth(float HealthToAdd);

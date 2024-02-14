@@ -37,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UBurnItFlammableComponent* GetFlammableComponent() const { return FlammableComponent; }
+
+	UFUNCTION(BlueprintCallable)
+	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
 	
 	UFUNCTION(BlueprintCallable)
 	float GetBurnTemperature() const { return GetFlammableComponent()->GetFlammableObjectData().BurnTemperature; }

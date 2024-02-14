@@ -14,6 +14,7 @@ UBurnItFlammableComponent::UBurnItFlammableComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	// Set player specific variables
 	if (ABurnItPlayerState* PS = Cast<ABurnItPlayerState>(GetOwner()))
 	{
 		PlayerState = PS;
@@ -22,7 +23,7 @@ UBurnItFlammableComponent::UBurnItFlammableComponent()
 	}
 
 	// Initialize Health to be MaxHealth
-	FlammableObject.Health = FlammableObject.MaxHealth;
+	SetHealth(GetMaxHealth());
 
 	// Bind Burn DoT function
 	BurnDamageTimerDelegate.BindUFunction(this, FName("Burn"));
@@ -48,17 +49,14 @@ ABurnItFlammableActor* UBurnItFlammableComponent::GetFlammableActor() const
 
 void UBurnItFlammableComponent::SetHealth(float NewHealth)
 {
-	// Set the health
-	FlammableObject.Health += NewHealth;
-
-	// Clamp health so it doesn't go under 0 or above the max health
-	FlammableObject.Health = FMath::Clamp(FlammableObject.Health, 0, FlammableObject.MaxHealth);
+	// Set the health, clamped so it doesn't go under 0 or above the max health
+	FlammableObject.Health = FMath::Clamp(NewHealth, 0, GetMaxHealth());
 }
 
 void UBurnItFlammableComponent::AdjustHealth(float HealthToAdd)
 {
 	// Set new health value
-	SetHealth(HealthToAdd);
+	SetHealth(GetHealth() + HealthToAdd);
 
 	// Check for death of player or object and process if dead
 	if (GetHealth() == 0)
@@ -110,10 +108,25 @@ void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd)
 	// Adjust the CurrentTemperature
 	AdjustCurrentTemperature(TempToAdd/100.f);
 
+	//--- Begin updating heated overlay material as temperature changes
+	// Find the % the current temperature is between base temperature and ignition temperature
+	const float HeatedMaterialVisibility = FMath::GetRangePct(GetBaseTemperature(), GetIgnitionTemperature(), GetCurrentTemperature());
+	
+	// Map the visibility change (0-1) to happen slowly at first then quickly
+	const float InterpHeatedPercent = FMath::InterpEaseIn(0.f, 1.f, HeatedMaterialVisibility, 2.f);
+	
+	// Set resulting float as material instance parameter for visibility
+	/*UMaterialInterface* OverlayMaterial = GetFlammableActor()->GetStaticMeshComponent()->GetOverlayMaterial();
+	UMaterialInstanceDynamic* HeatedMaterialInstance = UMaterialInstanceDynamic::Create(OverlayMaterial, nullptr);
+	GetFlammableActor()->GetStaticMeshComponent()->SetOverlayMaterial(HeatedMaterialInstance);
+	HeatedMaterialInstance->SetScalarParameterValue("Visibility", InterpHeatedPercent);*/
+	//--- End updating heated overlay material
+
 	// Start time-to-cool timer
 	GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, GetTimeUntilCooling());
-	
-	if (FlammableObject.CurrentTemperature >= FlammableObject.IgnitionTemperature)
+
+	// Tell object to catch fire or melt when the ignition or autoignition temperature is met 
+	if (GetCurrentTemperature() >= GetIgnitionTemperature())
 	{
 		if (FlammableObject.WillBurn)
 		{
@@ -132,6 +145,9 @@ void UBurnItFlammableComponent::CatchFire()
 
 	// Tell actor to start flame FX
 	GetFlammableActor()->Ignite();
+
+	// Stop the object from cooling while on fire
+	GetWorld()->GetTimerManager().ClearTimer(CoolingTimerHandle);
 
 	// Start the burn damage DoT
 	GetWorld()->GetTimerManager().SetTimer(BurnDamageTimerHandle, BurnDamageTimerDelegate, 1.f, true, 0.f);
@@ -172,12 +188,13 @@ void UBurnItFlammableComponent::Cool()
 		const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingTickRate;
 		AdjustCurrentTemperature(TempChange);
 		
-		if (FMath::RoundToNegativeInfinity(GetCurrentTemperature()) <= GetBaseTemperature())
+		// When close enough to the base temperature, set to base temp. This keeps the object from staying in the cooling state for an unnecessary amount of time
+		if (FMath::IsNearlyEqual(GetCurrentTemperature(), GetBaseTemperature()))
 		{
 			SetCurrentTemperature(GetBaseTemperature());
 			GetWorld()->GetTimerManager().ClearTimer(CoolingTimerHandle);
 		}
-		else
+		else // Continue to cool if not near the base temperature
 		{
 			GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, CoolingTickRate);
 		}

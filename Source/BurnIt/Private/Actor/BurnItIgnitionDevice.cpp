@@ -122,19 +122,18 @@ void ABurnItIgnitionDevice::RemoveIgnitionDeviceFromHUD() const
 	}
 }
 
-void ABurnItIgnitionDevice::StartUsing()
+void ABurnItIgnitionDevice::StartUsing_Implementation()
 {
 	if(Fuel > 0)
 	{
 		bIsFiring = true;
 		SpendFuel();
 		StartFX();
-		GetWorldTimerManager().SetTimer(FuelDepletionTimerHandle, FuelDepletionTimerDelegate, FuelDepletionTickRate, true, -1);
-		OnDeviceTriggered.Broadcast();
+		GetWorldTimerManager().SetTimer(FuelDepletionTimerHandle, FuelDepletionTimerDelegate, FuelDepletionTickRate, true, FuelDepletionTickRate);
 	}
 }
 
-void ABurnItIgnitionDevice::StopUsing()
+void ABurnItIgnitionDevice::StopUsing_Implementation()
 {
 	bIsFiring = false;
 	StopFX();
@@ -145,6 +144,7 @@ void ABurnItIgnitionDevice::SpendFuel()
 {
 	if(bIsFiring)
 	{
+		OnDeviceTriggered.Broadcast();
 		if(Fuel > 0)
 		{
 			if (GEngine)
