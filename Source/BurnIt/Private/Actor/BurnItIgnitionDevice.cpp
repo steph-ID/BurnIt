@@ -52,10 +52,10 @@ void ABurnItIgnitionDevice::OnSphereBeginOverlap(UPrimitiveComponent* Overlapped
 		AttachWeapon(Character);
 		// Notify that the actor is being picked up
 		//OnPickUp.Broadcast(Character);
-		if (GEngine)
+		/*if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("overlap")));
-		}
+		}*/
 
 		// Unregister from the Overlap Event so it is no longer triggered
 		IgnitionDeviceCollision->OnComponentBeginOverlap.RemoveAll(this);
@@ -147,10 +147,10 @@ void ABurnItIgnitionDevice::SpendFuel()
 		OnDeviceTriggered.Broadcast();
 		if(Fuel > 0)
 		{
-			if (GEngine)
+			/*if (GEngine)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("fuel depletion of %f per %fs"), FuelDepletionValue, FuelDepletionTickRate));
-			}
+			}*/
 			Fuel -= FuelDepletionValue;
 			OnFuelUpdated.Broadcast(Fuel, MaxFuel);
 		}

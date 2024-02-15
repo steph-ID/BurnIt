@@ -103,24 +103,22 @@ void UBurnItFlammableComponent::ProcessPlayerDeath()
 	// Activate death function on character
 }
 
+void UBurnItFlammableComponent::UpdateHeatVisualizationMaterial()
+{
+	// Find the % the current temperature is between base temperature and ignition temperature
+	const float HeatedMaterialVisibilityPercent = FMath::GetRangePct(GetBaseTemperature(), GetIgnitionTemperature(), GetCurrentTemperature());
+	
+	// Map the visibility change (0-1) to happen slowly at first then quickly and call SetHeatedMaterialVisibility blueprint function
+	GetFlammableActor()->SetHeatedMaterialVisibility(FMath::InterpEaseIn(0.f, 1.f, HeatedMaterialVisibilityPercent, 2.f));
+}
+
 void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd)
 {
 	// Adjust the CurrentTemperature
 	AdjustCurrentTemperature(TempToAdd/100.f);
 
-	//--- Begin updating heated overlay material as temperature changes
-	// Find the % the current temperature is between base temperature and ignition temperature
-	const float HeatedMaterialVisibility = FMath::GetRangePct(GetBaseTemperature(), GetIgnitionTemperature(), GetCurrentTemperature());
-	
-	// Map the visibility change (0-1) to happen slowly at first then quickly
-	const float InterpHeatedPercent = FMath::InterpEaseIn(0.f, 1.f, HeatedMaterialVisibility, 2.f);
-	
-	// Set resulting float as material instance parameter for visibility
-	/*UMaterialInterface* OverlayMaterial = GetFlammableActor()->GetStaticMeshComponent()->GetOverlayMaterial();
-	UMaterialInstanceDynamic* HeatedMaterialInstance = UMaterialInstanceDynamic::Create(OverlayMaterial, nullptr);
-	GetFlammableActor()->GetStaticMeshComponent()->SetOverlayMaterial(HeatedMaterialInstance);
-	HeatedMaterialInstance->SetScalarParameterValue("Visibility", InterpHeatedPercent);*/
-	//--- End updating heated overlay material
+	// Change opacity of heat visualization material
+	UpdateHeatVisualizationMaterial();
 
 	// Start time-to-cool timer
 	GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, GetTimeUntilCooling());
@@ -187,6 +185,9 @@ void UBurnItFlammableComponent::Cool()
 	{
 		const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingTickRate;
 		AdjustCurrentTemperature(TempChange);
+
+		// Change opacity of heat visualization material
+		UpdateHeatVisualizationMaterial();
 		
 		// When close enough to the base temperature, set to base temp. This keeps the object from staying in the cooling state for an unnecessary amount of time
 		if (FMath::IsNearlyEqual(GetCurrentTemperature(), GetBaseTemperature()))

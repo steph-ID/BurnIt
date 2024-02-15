@@ -32,10 +32,13 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 	ABurnItPlayerState* PlayerState = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
-	float ChanceToTurnToAsh = 1.f;
+	float ChanceToTurnToAsh = 0.f;
 	
 	UPROPERTY(EditAnywhere, Category="Flammable Object")
 	float CoolingTickRate = 0.1f;
+	
+	UPROPERTY(EditAnywhere, Category="Flammable Object")
+	float HeatedMaterialVisibility;
 
 public:	
 	// Sets default values for this component's properties
@@ -74,6 +77,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetTimeUntilCooling() const { return FlammableObject.TimeUntilCooling; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetHeatedMaterialVisibility() const { return HeatedMaterialVisibility; }
 	
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const { return FlammableObject.Health; }
@@ -125,7 +131,6 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void Burn();
-	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -144,7 +149,8 @@ private:
 	
 	UFUNCTION(BlueprintCallable)
 	void ProcessPlayerDeath();
-	
+	void UpdateHeatVisualizationMaterial();
+
 	UFUNCTION(BlueprintCallable)
 	void SendPoints();
 };

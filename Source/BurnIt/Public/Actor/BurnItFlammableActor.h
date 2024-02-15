@@ -17,7 +17,7 @@ class BURNIT_API ABurnItFlammableActor : public AActor
 	UPROPERTY()
 	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, Category="Flammable Object")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	UBurnItFlammableComponent* FlammableComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
@@ -43,6 +43,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	float GetBurnTemperature() const { return GetFlammableComponent()->GetFlammableObjectData().BurnTemperature; }
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetHeatedMaterialVisibility(float NewHeatedMaterialVisibility);
 	
 	UFUNCTION(BlueprintNativeEvent)
 	void Ignite();
