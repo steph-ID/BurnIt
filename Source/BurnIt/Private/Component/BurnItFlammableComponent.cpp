@@ -112,11 +112,36 @@ void UBurnItFlammableComponent::UpdateHeatVisualizationMaterial()
 	GetFlammableActor()->SetHeatedMaterialVisibility(FMath::InterpEaseIn(0.f, 1.f, HeatedMaterialVisibilityPercent, 2.f));
 }
 
-void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd)
+void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd, bool bIsTouchedByFlames, AActor* Instigator)
 {
-	// Adjust the CurrentTemperature
-	AdjustCurrentTemperature(TempToAdd/100.f);
+	// If the object is already on fire and at the burn temperature, do not continue to adjust heat
+	if (bIsOnFire && GetCurrentTemperature() >= GetBurnTemperature())
+	{
+		return;
+	}
+	
+	// TODO: Add correct logic to adjust heat source array here
+	HeatSources.Shrink();
+	CurrentHeatSources = HeatSources.Num();
 
+	// Add the instigating actor to a list of unique actors affecting this object so we can apply diminishing returns later
+	if (CurrentHeatSources < MaxHeatSourcesUntilDiminishedReturns && Instigator != nullptr)
+	{
+		HeatSources.AddUnique(Instigator);
+		CurrentHeatSources = HeatSources.Num();
+		//HeatSources.RemoveAll(nullptr);
+	}
+	
+	// Adjust the CurrentTemperature if CurrentHeatSources > 0 (no division by 0)
+	if ((bIsTouchedByFlames || bIsOnFire) && CurrentHeatSources > 0.f)
+	{
+		AdjustCurrentTemperature(TempToAdd*(HeatTransferenceRate*2)/(CurrentHeatSources*0.66f));
+	}
+	else
+	{
+		AdjustCurrentTemperature(TempToAdd*HeatTransferenceRate);
+	}
+	
 	// Change opacity of heat visualization material
 	UpdateHeatVisualizationMaterial();
 
@@ -124,7 +149,7 @@ void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd)
 	GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, GetTimeUntilCooling());
 
 	// Tell object to catch fire or melt when the ignition or autoignition temperature is met 
-	if (GetCurrentTemperature() >= GetIgnitionTemperature())
+	if (!bIsOnFire && ((bIsTouchedByFlames && (GetCurrentTemperature() >= GetIgnitionTemperature())) || GetCurrentTemperature() >= GetAutoIgnitionTemperature()))
 	{
 		if (FlammableObject.WillBurn)
 		{
@@ -175,15 +200,17 @@ void UBurnItFlammableComponent::Melt() const
 
 void UBurnItFlammableComponent::Burn()
 {
-	const float BurnDamage = -GetBurnTemperature()/100.f;
+	const float BurnDamage = -GetBurnTemperature()/1000.f;
 	AdjustHealth(BurnDamage);
+	GetFlammableActor()->Propagate();
 }
 
 void UBurnItFlammableComponent::Cool()
 {
-	if (GetCurrentTemperature() != GetBaseTemperature())
+	// Only run if not on fire and the current temp is not the base temp
+	if (!bIsOnFire && GetCurrentTemperature() != GetBaseTemperature())
 	{
-		const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingTickRate;
+		const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingRate;
 		AdjustCurrentTemperature(TempChange);
 
 		// Change opacity of heat visualization material

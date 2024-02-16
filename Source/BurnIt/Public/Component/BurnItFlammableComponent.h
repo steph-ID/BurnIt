@@ -31,14 +31,35 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
 	ABurnItPlayerState* PlayerState = nullptr;
 
+	// Chance to turn into ashen version of an object rather than to collapse into ash immediately
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	float ChanceToTurnToAsh = 0.f;
 	
 	UPROPERTY(EditAnywhere, Category="Flammable Object")
-	float CoolingTickRate = 0.1f;
-	
+	float CoolingRate = 0.05f;
+
+	// How quickly the cooling function should run
+	UPROPERTY(EditAnywhere, Category="Flammable Object")
+	float CoolingTickRate = 0.25f;
+
+	// Rate at which heat is gained or lost
+	UPROPERTY(EditAnywhere, Category="Flammable Object")
+	float HeatTransferenceRate = 0.025f;
+
+	// Opacity of heated object overlay material
 	UPROPERTY(EditAnywhere, Category="Flammable Object")
 	float HeatedMaterialVisibility;
+
+	UPROPERTY(VisibleAnywhere, Category="Flammable Object")
+	TArray<AActor*> HeatSources;
+	//TArray<TSharedPtr<AActor>> HeatSources;
+
+	UPROPERTY(EditAnywhere, Category="Flammable Object")
+	int32 CurrentHeatSources = 0;
+
+	UPROPERTY(EditAnywhere, Category="Flammable Object")
+	int32 MaxHeatSourcesUntilDiminishedReturns = 5;
+
 
 public:	
 	// Sets default values for this component's properties
@@ -53,6 +74,9 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
 	FOnAttributeUpdatedTwoFloat OnHealthUpdated;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object")
+	UCurveFloat* BurnTempFalloffCurve = nullptr;
 
 	/*
 	 * Begin getters
@@ -74,6 +98,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetIgnitionTemperature() const { return FlammableObject.IgnitionTemperature; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetAutoIgnitionTemperature() const { return FlammableObject.AutoIgnitionTemperature; }
 
 	UFUNCTION(BlueprintCallable)
 	float GetTimeUntilCooling() const { return FlammableObject.TimeUntilCooling; }
@@ -115,7 +142,7 @@ public:
 	void AdjustHealth(float HealthToAdd);
 	
 	UFUNCTION(BlueprintCallable)
-	void AdjustTemperature(float TempToAdd);
+	void AdjustTemperature(float TempToAdd, bool bIsTouchedByFlames, AActor* Instigator);
 	
 	UFUNCTION(BlueprintCallable)
 	void CatchFire();

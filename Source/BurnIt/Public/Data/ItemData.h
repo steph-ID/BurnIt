@@ -38,7 +38,7 @@ struct FFlammableObjectData
 	float BurnTemperature = 1500.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
-	float TimeUntilCooling = 3.f;
+	float TimeUntilCooling = 5.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
 	bool WillBurn = true;

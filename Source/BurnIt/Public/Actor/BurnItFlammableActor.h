@@ -51,6 +51,9 @@ public:
 	void Ignite();
 	
 	UFUNCTION(BlueprintNativeEvent)
+	void Propagate();
+	
+	UFUNCTION(BlueprintNativeEvent)
 	void Extinguish();
 	
 	UFUNCTION(BlueprintNativeEvent)

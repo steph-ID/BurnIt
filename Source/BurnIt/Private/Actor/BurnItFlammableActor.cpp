@@ -33,6 +33,10 @@ void ABurnItFlammableActor::Ignite_Implementation()
 {
 }
 
+void ABurnItFlammableActor::Propagate_Implementation()
+{
+}
+
 void ABurnItFlammableActor::Extinguish_Implementation()
 {
 }

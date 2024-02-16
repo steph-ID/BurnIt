@@ -81,7 +81,6 @@ void ABurnItIgnitionDevice::AttachWeapon(ABurnItCharacter* TargetCharacter)
 	Character->SetIgnitionDevice(this);
 	SetIgnitionDeviceOnHUD();
 	
-
 	// Set up action bindings
 	if (const APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
