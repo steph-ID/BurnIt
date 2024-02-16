@@ -52,6 +52,7 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 
 	UPROPERTY(VisibleAnywhere, Category="Flammable Object")
 	TArray<AActor*> HeatSources;
+	
 	//TArray<TSharedPtr<AActor>> HeatSources;
 
 	UPROPERTY(EditAnywhere, Category="Flammable Object")

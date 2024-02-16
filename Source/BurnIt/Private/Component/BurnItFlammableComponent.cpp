@@ -114,16 +114,16 @@ void UBurnItFlammableComponent::UpdateHeatVisualizationMaterial()
 
 void UBurnItFlammableComponent::AdjustTemperature(float TempToAdd, bool bIsTouchedByFlames, AActor* Instigator)
 {
+	// TODO: Might be bugged since it relies on garbage collection timer
+	HeatSources.Shrink();
+	CurrentHeatSources = HeatSources.Num();
+	
 	// If the object is already on fire and at the burn temperature, do not continue to adjust heat
 	if (bIsOnFire && GetCurrentTemperature() >= GetBurnTemperature())
 	{
 		return;
 	}
 	
-	// TODO: Add correct logic to adjust heat source array here
-	HeatSources.Shrink();
-	CurrentHeatSources = HeatSources.Num();
-
 	// Add the instigating actor to a list of unique actors affecting this object so we can apply diminishing returns later
 	if (CurrentHeatSources < MaxHeatSourcesUntilDiminishedReturns && Instigator != nullptr)
 	{
@@ -207,24 +207,32 @@ void UBurnItFlammableComponent::Burn()
 
 void UBurnItFlammableComponent::Cool()
 {
+	
 	// Only run if not on fire and the current temp is not the base temp
-	if (!bIsOnFire && GetCurrentTemperature() != GetBaseTemperature())
+	if (!bIsOnFire)
 	{
-		const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingRate;
-		AdjustCurrentTemperature(TempChange);
-
-		// Change opacity of heat visualization material
-		UpdateHeatVisualizationMaterial();
+		// Remove all heat source tracking
+		HeatSources.Empty();
+		CurrentHeatSources = HeatSources.Num();
 		
-		// When close enough to the base temperature, set to base temp. This keeps the object from staying in the cooling state for an unnecessary amount of time
-		if (FMath::IsNearlyEqual(GetCurrentTemperature(), GetBaseTemperature()))
+		if(GetCurrentTemperature() != GetBaseTemperature())
 		{
-			SetCurrentTemperature(GetBaseTemperature());
-			GetWorld()->GetTimerManager().ClearTimer(CoolingTimerHandle);
-		}
-		else // Continue to cool if not near the base temperature
-		{
-			GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, CoolingTickRate);
+			const float TempChange = (GetBaseTemperature() - GetCurrentTemperature())*CoolingRate;
+			AdjustCurrentTemperature(TempChange);
+
+			// Change opacity of heat visualization material
+			UpdateHeatVisualizationMaterial();
+		
+			// When close enough to the base temperature, set to base temp. This keeps the object from staying in the cooling state for an unnecessary amount of time
+			if (FMath::IsNearlyEqual(GetCurrentTemperature(), GetBaseTemperature()))
+			{
+				SetCurrentTemperature(GetBaseTemperature());
+				GetWorld()->GetTimerManager().ClearTimer(CoolingTimerHandle);
+			}
+			else // Continue to cool if not near the base temperature
+			{
+				GetWorld()->GetTimerManager().SetTimer(CoolingTimerHandle, CoolingTimerDelegate, CoolingTickRate, false, CoolingTickRate);
+			}
 		}
 	}
 	//ABurnItLevelDataManager* LevelDataManager =
