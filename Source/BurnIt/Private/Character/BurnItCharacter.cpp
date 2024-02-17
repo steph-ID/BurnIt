@@ -111,6 +111,9 @@ void ABurnItCharacter::SetInitialConfig()
 			BurnItHUD->InitOverlay();
 		}
 	}*/
-	Cast<ABurnItHUD>(Cast<ABurnItPlayerController>(Controller.Get())->GetHUD())->InitOverlay();
+	if (ABurnItHUD* HUD = Cast<ABurnItHUD>(Cast<ABurnItPlayerController>(Controller.Get())->GetHUD()))
+	{
+		HUD->InitOverlay();
+	}
 }
 

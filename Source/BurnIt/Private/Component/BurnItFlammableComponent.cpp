@@ -224,7 +224,7 @@ void UBurnItFlammableComponent::Cool()
 			UpdateHeatVisualizationMaterial();
 		
 			// When close enough to the base temperature, set to base temp. This keeps the object from staying in the cooling state for an unnecessary amount of time
-			if (FMath::IsNearlyEqual(GetCurrentTemperature(), GetBaseTemperature()))
+			if (FMath::IsNearlyEqual(GetCurrentTemperature(), GetBaseTemperature(), 0.09f))
 			{
 				SetCurrentTemperature(GetBaseTemperature());
 				GetWorld()->GetTimerManager().ClearTimer(CoolingTimerHandle);
