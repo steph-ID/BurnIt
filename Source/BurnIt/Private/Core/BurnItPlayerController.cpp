@@ -5,8 +5,6 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Character/BurnItCharacter.h"
-#include "Core/BurnItPlayerState.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -45,6 +43,9 @@ void ABurnItPlayerController::SetupInputComponent()
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABurnItPlayerController::Look);
+
+		// Pause
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ABurnItPlayerController::Pause);
 	}
 	else
 	{
@@ -61,6 +62,10 @@ void ABurnItPlayerController::OnPossess(APawn* InPawn)
 	{
 		Cast<ABurnItCharacter>(GetCharacter())->SetInitialConfig();
 	}*/
+}
+
+void ABurnItPlayerController::PauseGame_Implementation()
+{
 }
 
 

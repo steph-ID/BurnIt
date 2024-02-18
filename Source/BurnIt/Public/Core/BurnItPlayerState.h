@@ -30,6 +30,9 @@ class BURNIT_API ABurnItPlayerState : public APlayerState
 	UPROPERTY()
 	float Ashes;
 
+	UPROPERTY()
+	float ObjectsBurned;
+
 public:
 	ABurnItPlayerState();
 
@@ -57,4 +60,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	int32 GetAshes() const { return Ashes; }
+	
+	UFUNCTION(BlueprintCallable)
+	int32 GetObjectsBurned() const { return ObjectsBurned; }
 };

@@ -39,6 +39,9 @@ class BURNIT_API ABurnItPlayerController : public APlayerController
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SprintAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> PauseAction;
+
 
 public:
 	ABurnItPlayerController();
@@ -50,6 +53,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void PauseGame();
 	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
