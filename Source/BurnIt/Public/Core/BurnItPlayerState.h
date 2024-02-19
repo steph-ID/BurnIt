@@ -25,6 +25,9 @@ class BURNIT_API ABurnItPlayerState : public APlayerState
 	FFlammableObjectData FlammableObject;*/
 
 	UPROPERTY()
+	FString PlayerName;
+
+	UPROPERTY()
 	float PlayerScore;
 
 	UPROPERTY()
@@ -36,11 +39,16 @@ class BURNIT_API ABurnItPlayerState : public APlayerState
 public:
 	ABurnItPlayerState();
 
+	virtual void SetPlayerName(const FString& S) override;
+
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
 	FOnAttributeUpdatedOneFloat OnAshesUpdated;
 
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
 	FOnAttributeUpdatedOneFloat OnPlayerScoreUpdated;
+
+	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
+	FOnAttributeUpdatedOneFloat OnObjectsBurnedUpdated;
 
 	UFUNCTION(BlueprintCallable)
 	UBurnItFlammableComponent* GetFlammableComponent() const { return FlammableComponent; }
@@ -54,6 +62,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetAshes(float NewAshes);
+
+	UFUNCTION(BlueprintCallable)
+	void SetObjectsBurned(float NewObjectsBurned);
 	
 	UFUNCTION(BlueprintCallable)
 	int32 GetPlayerScore() const { return PlayerScore; }

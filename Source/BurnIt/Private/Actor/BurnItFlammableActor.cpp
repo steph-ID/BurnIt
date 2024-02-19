@@ -3,6 +3,9 @@
 
 #include "Actor/BurnItFlammableActor.h"
 
+#include "Core/BurnItGameStateBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ABurnItFlammableActor::ABurnItFlammableActor()
 {

@@ -6,6 +6,7 @@
 #include "Widget/BurnItUserWidget.h"
 #include "BurnItOverlayWrapper.generated.h"
 
+enum class EGameState : uint8;
 class ABurnItIgnitionDevice;
 /**
  * 
@@ -38,10 +39,11 @@ public:
 	TObjectPtr<ABurnItIgnitionDevice> IgnitionDevice;
 
 	// Event delegates
-	FOnAttributeUpdated HealthUpdatedDelegateHandle;
+	/*FOnAttributeUpdated HealthUpdatedDelegateHandle;
 	FOnAttributeUpdated AshesUpdatedDelegateHandle;
 	FOnAttributeUpdated PlayerScoreUpdatedDelegateHandle;
 	FOnAttributeUpdated FuelUpdatedDelegateHandle;
+	FOnAttributeUpdated ObjectsBurnedUpdatedDelegateHandle;*/
 
 	// Functions to update attributes on HUD
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
@@ -55,4 +57,10 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdatePlayerScoreOnHUD(float NewPlayerScore);
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateObjectsBurnedOnHUD(float NewObjectsBurned);
+	
+	UFUNCTION(BlueprintCallable)
+	void UpdateOnGameStateChange(EGameState NewGameState);
 };

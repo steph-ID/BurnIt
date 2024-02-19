@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "BurnItActor.h"
 #include "Component/BurnItFlammableComponent.h"
+#include "Core/BurnItGameModeBase.h"
 #include "BurnItFlammableActor.generated.h"
 
+class ABurnItGameStateBase;
 class UBurnItFlammableComponent;
 
 UCLASS()
@@ -23,8 +25,8 @@ class BURNIT_API ABurnItFlammableActor : public AActor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	float AshValue = 10.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
-	bool bIsOnFire = false;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
+	//bool bIsOnFire = false;
 	
 public:	
 	// Sets default values for this actor's properties

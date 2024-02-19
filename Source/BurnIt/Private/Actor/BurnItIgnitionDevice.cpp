@@ -137,6 +137,11 @@ void ABurnItIgnitionDevice::StopUsing_Implementation()
 	bIsFiring = false;
 	StopFX();
 	GetWorldTimerManager().ClearTimer(FuelDepletionTimerHandle);
+	if (Fuel == 0)
+	{
+		ABurnItPlayerController* PC	= Cast<ABurnItPlayerController>(Character->GetController());
+		PC->NotifyGameStateOfFuelDepletion();
+	}
 }
 
 void ABurnItIgnitionDevice::SpendFuel()

@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "BurnItPlayerController.generated.h"
 
+enum class EGameState : uint8;
+class ABurnItGameStateBase;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
@@ -42,12 +44,23 @@ class BURNIT_API ABurnItPlayerController : public APlayerController
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> PauseAction;
 
+	UPROPERTY()
+	ABurnItGameStateBase* GameState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	bool bGameplayInputBlocked = false;
 
 public:
 	ABurnItPlayerController();
 	
 	UPROPERTY(BlueprintReadWrite)
 	APawn* PossessedPawn = nullptr;
+	
+	UFUNCTION()
+	void NotifyGameStateOfFuelDepletion();
+
+	UFUNCTION(BlueprintCallable)
+	void BlockGameplayInput(bool bNewBlockInput);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -80,4 +93,7 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void StopSprint();
+
+	UFUNCTION()
+	void UpdateOnGameStateChange(EGameState NewGameState);
 };

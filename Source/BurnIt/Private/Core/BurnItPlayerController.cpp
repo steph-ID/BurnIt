@@ -5,11 +5,18 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Core/BurnItGameStateBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABurnItPlayerController::ABurnItPlayerController()
 {
+	if(ABurnItGameStateBase* GS = Cast<ABurnItGameStateBase>(UGameplayStatics::GetGameState(this)))
+	{
+		GameState = GS;
+		GameState->OnGameStateChange.AddDynamic(this, &ABurnItPlayerController::UpdateOnGameStateChange);
+	}
 }
 
 void ABurnItPlayerController::BeginPlay()
@@ -22,7 +29,6 @@ void ABurnItPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
-
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -71,6 +77,10 @@ void ABurnItPlayerController::PauseGame_Implementation()
 
 void ABurnItPlayerController::Move(const FInputActionValue& Value)
 {
+	if (bGameplayInputBlocked)
+	{
+		return;
+	}
 	// input is a Vector2D
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -84,6 +94,10 @@ void ABurnItPlayerController::Move(const FInputActionValue& Value)
 
 void ABurnItPlayerController::Look(const FInputActionValue& Value)
 {
+	if (bGameplayInputBlocked)
+	{
+		return;
+	}
 	// input is a Vector2D
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -130,8 +144,56 @@ void ABurnItPlayerController::UnCrouch()
 
 void ABurnItPlayerController::Sprint()
 {
+	if (bGameplayInputBlocked)
+	{
+		return;
+	}
 }
 
 void ABurnItPlayerController::StopSprint()
 {
+}
+
+void ABurnItPlayerController::UpdateOnGameStateChange(EGameState NewGameState)
+{
+	const FInputModeGameOnly GameOnlyInputMode;
+	const FInputModeUIOnly UIOnlyInputMode;
+	
+	switch (NewGameState)
+	{
+	case EGameState::Waiting:
+		BlockGameplayInput(true);
+		break;
+	case EGameState::Playing:
+		BlockGameplayInput(false);
+		SetInputMode(GameOnlyInputMode);
+		break;
+	case EGameState::Ending:
+		break;
+	case EGameState::GameOver:
+		BlockGameplayInput(false);
+		SetActorEnableCollision(false);
+		StopMovement();
+		break;
+	case EGameState::Results:
+		BlockGameplayInput(false);
+		SetInputMode(UIOnlyInputMode);
+		break;
+	default:
+		BlockGameplayInput(false);
+		SetInputMode(GameOnlyInputMode);
+		break;
+	}
+}
+
+void ABurnItPlayerController::NotifyGameStateOfFuelDepletion()
+{
+	GameState->FuelDepleted();
+}
+
+void ABurnItPlayerController::BlockGameplayInput(bool bNewBlockInput)
+{
+	SetIgnoreMoveInput(bNewBlockInput);
+	SetIgnoreLookInput(bNewBlockInput);
+	bGameplayInputBlocked = bNewBlockInput;
 }
