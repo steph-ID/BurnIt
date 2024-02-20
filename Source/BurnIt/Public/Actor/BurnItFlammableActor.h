@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "BurnItActor.h"
 #include "Component/BurnItFlammableComponent.h"
-#include "Core/BurnItGameModeBase.h"
 #include "BurnItFlammableActor.generated.h"
 
 class ABurnItGameStateBase;

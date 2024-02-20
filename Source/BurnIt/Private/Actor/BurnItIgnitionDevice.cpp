@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Core/BurnItGameStateBase.h"
 #include "Core/BurnItPlayerController.h"
 #include "Core/BurnItPlayerState.h"
 #include "HUD/BurnItHUD.h"
@@ -30,14 +31,14 @@ ABurnItIgnitionDevice::ABurnItIgnitionDevice()
 
 	// Default offset from the character location for projectiles to spawn
 	//MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
-
-	Fuel = MaxFuel;
 }
 
 // Called when the game starts or when spawned
 void ABurnItIgnitionDevice::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Fuel = MaxFuel;
 
 	// Register our Overlap Event
 	IgnitionDeviceCollision->OnComponentBeginOverlap.AddDynamic(this, &ABurnItIgnitionDevice::OnSphereBeginOverlap);
@@ -121,7 +122,7 @@ void ABurnItIgnitionDevice::RemoveIgnitionDeviceFromHUD() const
 	}
 }
 
-void ABurnItIgnitionDevice::StartUsing_Implementation()
+void ABurnItIgnitionDevice::StartUsing()
 {
 	if(Fuel > 0)
 	{
@@ -132,15 +133,18 @@ void ABurnItIgnitionDevice::StartUsing_Implementation()
 	}
 }
 
-void ABurnItIgnitionDevice::StopUsing_Implementation()
+void ABurnItIgnitionDevice::StopUsing()
 {
 	bIsFiring = false;
 	StopFX();
 	GetWorldTimerManager().ClearTimer(FuelDepletionTimerHandle);
-	if (Fuel == 0)
+	
+	// Tell the game state the player has run out of fuel
+	if (Fuel == 0 && !bIsGameOver)
 	{
 		ABurnItPlayerController* PC	= Cast<ABurnItPlayerController>(Character->GetController());
 		PC->NotifyGameStateOfFuelDepletion();
+		bIsGameOver = true;
 	}
 }
 
@@ -158,7 +162,7 @@ void ABurnItIgnitionDevice::SpendFuel()
 			Fuel -= FuelDepletionValue;
 			OnFuelUpdated.Broadcast(Fuel, MaxFuel);
 		}
-		else
+		else if (!bIsGameOver)
 		{
 			StopUsing();
 		}

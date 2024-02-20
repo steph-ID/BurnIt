@@ -12,6 +12,7 @@
 
 ABurnItPlayerController::ABurnItPlayerController()
 {
+	//GetWorld()->GetGameState<ABurnItGameStateBase>()->OnGameStateChange.AddDynamic(this, &ABurnItPlayerController::UpdateOnGameStateChange);
 	if(ABurnItGameStateBase* GS = Cast<ABurnItGameStateBase>(UGameplayStatics::GetGameState(this)))
 	{
 		GameState = GS;
@@ -163,6 +164,7 @@ void ABurnItPlayerController::UpdateOnGameStateChange(EGameState NewGameState)
 	{
 	case EGameState::Waiting:
 		BlockGameplayInput(true);
+		SetInputMode(GameOnlyInputMode);
 		break;
 	case EGameState::Playing:
 		BlockGameplayInput(false);
@@ -174,6 +176,7 @@ void ABurnItPlayerController::UpdateOnGameStateChange(EGameState NewGameState)
 		BlockGameplayInput(false);
 		SetActorEnableCollision(false);
 		StopMovement();
+		SetInputMode(UIOnlyInputMode);
 		break;
 	case EGameState::Results:
 		BlockGameplayInput(false);

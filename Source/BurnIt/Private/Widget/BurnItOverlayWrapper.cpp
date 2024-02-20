@@ -5,29 +5,33 @@
 
 #include "Actor/BurnItIgnitionDevice.h"
 #include "Character/BurnItCharacter.h"	
-#include "Core/BurnItGameModeBase.h"
 #include "Core/BurnItGameStateBase.h"
 #include "Core/BurnItPlayerController.h"
 #include "Core/BurnItPlayerState.h"
-#include "Kismet/GameplayStatics.h"
 
 void UBurnItOverlayWrapper::BindCallbacksToDependencies()
 {
 	ABurnItPlayerState* PlayerState = GetOwningPlayerState<ABurnItPlayerState>();
 	UBurnItFlammableComponent* FlammableComponent = PlayerState->GetFlammableComponent();
 	IgnitionDevice = FlammableComponent->GetBurnItCharacter()->GetIgnitionDevice();
-	
+
+	// Callbacks for HUD value updates
 	FlammableComponent->OnHealthUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdateHealthOnHUD);
 	PlayerState->OnAshesUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdateAshesOnHUD);
 	PlayerState->OnPlayerScoreUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdatePlayerScoreOnHUD);
 	PlayerState->OnObjectsBurnedUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdateObjectsBurnedOnHUD);
 
-	// Only add OnFuelUpdated if the player has an ignition device equipped
+	// Callback for game notification
+	OnShowGameNotification.AddDynamic(this, &UBurnItOverlayWrapper::ShowGameNotification);
+
+	// Only add OnFuelUpdated if the player already has an ignition device equipped
 	if (IgnitionDevice != nullptr)
 	{
 		IgnitionDevice->OnFuelUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdateFuelOnHUD);
 	}
-	if(ABurnItGameStateBase* GS = Cast<ABurnItGameStateBase>(UGameplayStatics::GetGameState(this)))
+
+	// Subscribe to changes of the game state
+	if(ABurnItGameStateBase* GS = GetWorld()->GetGameState<ABurnItGameStateBase>())
 	{
 		GS->OnGameStateChange.AddDynamic(this, &UBurnItOverlayWrapper::UpdateOnGameStateChange);
 	}
@@ -88,8 +92,12 @@ void UBurnItOverlayWrapper::UpdateOnGameStateChange(EGameState NewGameState)
 	case EGameState::Waiting:
 		break;
 	case EGameState::Playing:
+		// TODO: Update to use map based on EGameState enum
+		OnShowGameNotification.Broadcast(NotificationDataTable, "Round_Start");
 		break;
 	case EGameState::Ending:
+		// TODO: Update to use map based on EGameState enum
+		OnShowGameNotification.Broadcast(NotificationDataTable, "Round_Complete");
 		break;
 	case EGameState::GameOver:
 		break;

@@ -3,23 +3,33 @@
 
 #include "Core/BurnItGameStateBase.h"
 
-void ABurnItGameStateBase::PrepGame()
+ABurnItGameStateBase::ABurnItGameStateBase()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	GameStartWaitTimer = GameStartCountdownDuration;
+}
+
+void ABurnItGameStateBase::PrepGameRound()
 {
 	GameState = EGameState::Waiting;
-	StartGameCountdown(GameCountdownDuration);
 
-	GetWorld()->GetTimerManager().SetTimer(GameCountdownTimerHandle, this, &ABurnItGameStateBase::StartGame, GameCountdownDuration, false);
+	//GetWorld()->GetTimerManager().SetTimer(GameCountdownTimerHandle, this, &ABurnItGameStateBase::StartGameRound, GameStartCountdownDuration, false);
 	OnGameStateChange.Broadcast(GameState);
 }
 
-void ABurnItGameStateBase::StartGame()
+void ABurnItGameStateBase::StartGameRound()
 {
 	GameState = EGameState::Playing;
-	SetGameplayTime();
 	OnGameStateChange.Broadcast(GameState);
 }
 
-void ABurnItGameStateBase::EndGame()
+void ABurnItGameStateBase::StartFreeRoamRound()
+{
+	GameState = EGameState::Playing;
+	OnGameStateChange.Broadcast(GameState);
+}
+
+void ABurnItGameStateBase::LeaveRound()
 {
 	GameState = EGameState::Results;
 	OnGameStateChange.Broadcast(GameState);
@@ -37,15 +47,49 @@ void ABurnItGameStateBase::PlayerDied()
 	OnGameStateChange.Broadcast(GameState);
 }
 
-void ABurnItGameStateBase::SetGameplayTime()
+void ABurnItGameStateBase::SetGameplayTime(float DeltaSeconds)
 {
-	GameplayTimer += GetServerWorldTimeSeconds();
+	GameplayTimer += DeltaSeconds;
 }
 
-void ABurnItGameStateBase::StopGameplayTimer()
+void ABurnItGameStateBase::StartGameCountdown(float DeltaSeconds)
 {
+	if (GameStartWaitTimer > 0.f)
+	{
+		GameStartWaitTimer -= DeltaSeconds;
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("%f seconds"), GameStartWaitTimer));
+	}
+	else
+	{
+		GameState = EGameState::Playing;
+		OnGameStateChange.Broadcast(GameState);
+	}
 }
 
-void ABurnItGameStateBase::StartGameCountdown(float Seconds)
+void ABurnItGameStateBase::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
+	if (GameState == EGameState::None)
+	{
+		return;
+	}
+	
+	switch (GameState)
+	{
+	case EGameState::Waiting:
+		StartGameCountdown(DeltaSeconds);
+		break;
+	case EGameState::Playing:
+		SetGameplayTime(DeltaSeconds);
+		break;
+	case EGameState::Ending:
+		break;
+	case EGameState::GameOver:
+		break;
+	case EGameState::Results:
+		break;
+	default:
+		break;
+	}
 }

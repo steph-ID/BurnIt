@@ -12,11 +12,15 @@ class ABurnItIgnitionDevice;
  * 
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttributeUpdated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnShowGameNotification, UDataTable*, DataTable, FName, RowName);
 
 UCLASS()
 class BURNIT_API UBurnItOverlayWrapper : public UBurnItUserWidget
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
+	UDataTable* NotificationDataTable = nullptr;
 
 public:
 	
@@ -38,28 +42,27 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Widget Controller")
 	TObjectPtr<ABurnItIgnitionDevice> IgnitionDevice;
 
-	// Event delegates
-	/*FOnAttributeUpdated HealthUpdatedDelegateHandle;
-	FOnAttributeUpdated AshesUpdatedDelegateHandle;
-	FOnAttributeUpdated PlayerScoreUpdatedDelegateHandle;
-	FOnAttributeUpdated FuelUpdatedDelegateHandle;
-	FOnAttributeUpdated ObjectsBurnedUpdatedDelegateHandle;*/
+	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
+	FOnShowGameNotification OnShowGameNotification;
 
 	// Functions to update attributes on HUD
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateHealthOnHUD(float NewHealth, float NewMaxHealth);
 	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateFuelOnHUD(float NewFuel, float NewMaxFuel);
 	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateAshesOnHUD(float NewAshes);
 	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void UpdatePlayerScoreOnHUD(float NewPlayerScore);
 	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateObjectsBurnedOnHUD(float NewObjectsBurned);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowGameNotification(UDataTable* DataTable, FName RowName);
 	
 	UFUNCTION(BlueprintCallable)
 	void UpdateOnGameStateChange(EGameState NewGameState);

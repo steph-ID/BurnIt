@@ -38,6 +38,9 @@ class BURNIT_API ABurnItIgnitionDevice : public AActor
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ignition Device|FX", meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* FlameFxNiagaraComponent;
+
+	UPROPERTY()
+	bool bIsGameOver = false;
 	
 public:	
 	ABurnItIgnitionDevice();
@@ -134,10 +137,10 @@ protected:
 	 * Begin device use functions
 	 */
 	
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable)
 	void StartUsing();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable)
 	void StopUsing();
 
 	UFUNCTION(BlueprintCallable)
