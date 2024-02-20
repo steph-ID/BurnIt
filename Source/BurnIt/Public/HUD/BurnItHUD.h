@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UBurnItUserWidget* GetOverlayWidget() const { return OverlayWidget; }
 
+	UFUNCTION(BlueprintCallable)
+	UBurnItOverlayWrapper* GetOverlayWrapper() const { return OverlayWrapper; }
+
 	void InitOverlay();
 	void InitIgnitionDeviceOverlay() const;
 	void RemoveIgnitionDeviceOverlay() const;

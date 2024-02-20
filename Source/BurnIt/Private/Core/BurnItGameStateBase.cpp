@@ -57,7 +57,7 @@ void ABurnItGameStateBase::StartGameCountdown(float DeltaSeconds)
 	if (GameStartWaitTimer > 0.f)
 	{
 		GameStartWaitTimer -= DeltaSeconds;
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("%f seconds"), GameStartWaitTimer));
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("%f seconds"), GameStartWaitTimer));
 	}
 	else
 	{

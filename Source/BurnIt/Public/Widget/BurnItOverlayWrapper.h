@@ -43,7 +43,10 @@ public:
 	TObjectPtr<ABurnItIgnitionDevice> IgnitionDevice;
 
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
-	FOnShowGameNotification OnShowGameNotification;
+	FOnShowGameNotification OnShowSideNotificationDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
+	FOnShowGameNotification OnShowPopupNotificationDelegate;
 
 	// Functions to update attributes on HUD
 	UFUNCTION(BlueprintImplementableEvent)
@@ -61,8 +64,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateObjectsBurnedOnHUD(float NewObjectsBurned);
 	
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowGameNotification(UDataTable* DataTable, FName RowName);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ShowSideNotification(UDataTable* DataTable, FName RowName);
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ShowPopupNotification(UDataTable* DataTable, FName RowName);
 	
 	UFUNCTION(BlueprintCallable)
 	void UpdateOnGameStateChange(EGameState NewGameState);

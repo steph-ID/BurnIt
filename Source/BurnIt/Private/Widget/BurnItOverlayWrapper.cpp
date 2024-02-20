@@ -21,8 +21,9 @@ void UBurnItOverlayWrapper::BindCallbacksToDependencies()
 	PlayerState->OnPlayerScoreUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdatePlayerScoreOnHUD);
 	PlayerState->OnObjectsBurnedUpdated.AddDynamic(this, &UBurnItOverlayWrapper::UpdateObjectsBurnedOnHUD);
 
-	// Callback for game notification
-	OnShowGameNotification.AddDynamic(this, &UBurnItOverlayWrapper::ShowGameNotification);
+	// Callback for game popups
+	OnShowSideNotificationDelegate.AddDynamic(this, &UBurnItOverlayWrapper::ShowSideNotification);
+	OnShowPopupNotificationDelegate.AddDynamic(this, &UBurnItOverlayWrapper::ShowPopupNotification);
 
 	// Only add OnFuelUpdated if the player already has an ignition device equipped
 	if (IgnitionDevice != nullptr)
@@ -93,11 +94,13 @@ void UBurnItOverlayWrapper::UpdateOnGameStateChange(EGameState NewGameState)
 		break;
 	case EGameState::Playing:
 		// TODO: Update to use map based on EGameState enum
-		OnShowGameNotification.Broadcast(NotificationDataTable, "Round_Start");
+			ShowSideNotification(NotificationDataTable, "Round_Start");
+		//OnShowSideNotificationDelegate.Broadcast(NotificationDataTable, "Round_Start");
 		break;
 	case EGameState::Ending:
 		// TODO: Update to use map based on EGameState enum
-		OnShowGameNotification.Broadcast(NotificationDataTable, "Round_Complete");
+			ShowSideNotification(NotificationDataTable, "Round_Complete");
+		//OnShowSideNotificationDelegate.Broadcast(NotificationDataTable, "Round_Complete");
 		break;
 	case EGameState::GameOver:
 		break;
