@@ -9,13 +9,11 @@
 void ABurnItHUD::InitOverlay()
 {
 	// Construct widget controller & widget, set widget's widget controller, add to viewport
-
-	checkf(OverlayWidgetClass, TEXT("OverlayWidgetClass uninitialized, please fill out BP_BurnItHUD"));
-	checkf(OverlayWrapperClass, TEXT("OverlayWrapperClass uninitialized, please fill out BP_BurnItHUD"));
+	checkf(OverlayClass, TEXT("OverlayClass uninitialized, please fill out BP_BurnItHUD"));
 
 	// Create a new wrapper widget
-	UUserWidget* Widget = CreateWidget<UUserWidget>(GetOwningPlayerController(), OverlayWidgetClass);
-	OverlayWidget = Cast<UBurnItUserWidget>(Widget);
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetOwningPlayerController(), OverlayClass);
+	OverlayWidget = Cast<UBurnItOverlayWrapper>(Widget);
 	
 	// Set current values on HUD's widgets
 	Cast<UBurnItOverlayWrapper>(OverlayWidget)->InitializeOverlay();
@@ -32,6 +30,21 @@ void ABurnItHUD::InitIgnitionDeviceOverlay() const
 void ABurnItHUD::RemoveIgnitionDeviceOverlay() const
 {
 	Cast<UBurnItOverlayWrapper>(OverlayWidget)->SetIgnitionDevice(false);
+}
+
+void ABurnItHUD::DisplayRoundResults()
+{
+	if (OverlayWidget)
+	{
+		OverlayWidget->RemoveFromParent();
+	}
+
+	checkf(ResultsOverlayClass, TEXT("ResultsOverlayClass uninitialized, please fill out BP_BurnItHUD"));
+	
+	// Create a new wrapper widget
+	UUserWidget* Widget = CreateWidget<UBurnItUserWidget>(GetOwningPlayerController(), ResultsOverlayClass);
+	
+	Widget->AddToViewport();
 }
 
 

@@ -70,6 +70,11 @@ void UBurnItOverlayWrapper::InitializeOverlay()
 	}
 }
 
+/*void UBurnItOverlayWrapper::InitializeResultsOverlay()
+{
+	GetOwningPlayer()->GetPlayerState<ABurnItPlayerState>()->GetRoundData();
+}*/
+
 void UBurnItOverlayWrapper::SetIgnitionDevice(bool bIsDeviceActive)
 {
 	if(bIsDeviceActive)

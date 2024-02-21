@@ -29,6 +29,7 @@ public:
 	void BindIgnitionDeviceCallbacksToDependencies();
 	void BindCallbacksToDependencies();
 	void InitializeOverlay();
+	//void InitializeResultsOverlay();
 	
 	UFUNCTION(BlueprintCallable)
 	void SetIgnitionDevice(bool bIsDeviceActive);

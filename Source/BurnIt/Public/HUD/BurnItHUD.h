@@ -32,30 +32,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UBurnItUserWidget* GetOverlayWidget() const { return OverlayWidget; }
 
-	UFUNCTION(BlueprintCallable)
-	UBurnItOverlayWrapper* GetOverlayWrapper() const { return OverlayWrapper; }
-
 	void InitOverlay();
 	void InitIgnitionDeviceOverlay() const;
 	void RemoveIgnitionDeviceOverlay() const;
+
+	UFUNCTION(BlueprintCallable)
+	void DisplayRoundResults();
 
 protected:
 
 private:
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UBurnItUserWidget> OverlayWidgetClass;
-
-	UPROPERTY()
-	TObjectPtr<UBurnItOverlayWrapper> OverlayWrapper;
+	TSubclassOf<UBurnItOverlayWrapper> OverlayClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UBurnItOverlayWrapper> OverlayWrapperClass;
-/*
-	UPROPERTY()
-	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
-	*/
+	TSubclassOf<UBurnItUserWidget> ResultsOverlayClass;
 };
