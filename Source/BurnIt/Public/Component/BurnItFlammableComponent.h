@@ -16,7 +16,7 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
 	bool bIsPlayer = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
@@ -24,15 +24,18 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	bool bIsOnFire = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
+	bool bPointsSent = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
 	FFlammableObjectData FlammableObject;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
 	ABurnItPlayerState* PlayerState = nullptr;
 
 	// Chance to turn into ashen version of an object rather than to collapse into ash immediately
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	float ChanceToTurnToAsh = 0.f;
 	
 	UPROPERTY(EditAnywhere, Category="Flammable Object")

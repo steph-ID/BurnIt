@@ -7,7 +7,6 @@
 #include "Character/BurnItCharacter.h"
 #include "Core/BurnItGameStateBase.h"
 #include "Core/BurnItPlayerController.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UBurnItFlammableComponent::UBurnItFlammableComponent()
@@ -243,16 +242,27 @@ void UBurnItFlammableComponent::Cool()
 void UBurnItFlammableComponent::SendPoints()
 {
 	// If the current game state is not Playing, do not continue on to award points
-	ABurnItGameStateBase* GS = Cast<ABurnItGameStateBase>(UGameplayStatics::GetGameState(this));
+	/*ABurnItGameStateBase* GS = Cast<ABurnItGameStateBase>(UGameplayStatics::GetGameState(this));
 	if (GS->GetCurrentGameState() != EGameState::Playing)
 	{
 		return;
-	}
+	}*/
 
+	const EGameState CurrentGameState = GetWorld()->GetGameState<ABurnItGameStateBase>()->GetCurrentGameState();
+	
+	// Don't send points if we're in the Ending game state and
+	//		- points have already been sent, or
+	//		- the object is not currently on fire
+	if (CurrentGameState == EGameState::Ending && (bPointsSent || !bIsOnFire))
+	{
+		return;
+	}
+	
 	// Award points to the player
 	const ABurnItPlayerController* PC = Cast<ABurnItPlayerController>(GetWorld()->GetFirstPlayerController());
 	ABurnItPlayerState* PS = PC->GetPlayerState<ABurnItPlayerState>();
 	PS->SetPlayerScore(FlammableObject.PointValue);
+	bPointsSent = true;
 }
 
 void UBurnItFlammableComponent::BeginPlay()

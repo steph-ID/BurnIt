@@ -50,7 +50,7 @@ void UBurnItOverlayWrapper::BroadcastInitialValues()
 	IgnitionDevice = FlammableComponent->GetBurnItCharacter()->GetIgnitionDevice();
 	
 	FlammableComponent->OnHealthUpdated.Broadcast(FlammableComponent->GetFlammableObjectData().Health, FlammableComponent->GetFlammableObjectData().MaxHealth);
-	PlayerState->OnAshesUpdated.Broadcast(PlayerState->GetAshes());
+	PlayerState->OnAshesUpdated.Broadcast(PlayerState->GetAshesCollected());
 	PlayerState->OnPlayerScoreUpdated.Broadcast(PlayerState->GetPlayerScore());
 	PlayerState->OnObjectsBurnedUpdated.Broadcast(PlayerState->GetObjectsBurned());
 }

@@ -26,14 +26,28 @@ void ABurnItPlayerState::SetPlayerScore(float NewScore)
 	OnPlayerScoreUpdated.Broadcast(PlayerScore);
 }
 
-void ABurnItPlayerState::SetAshes(float NewAshes)
+void ABurnItPlayerState::SetAshesCollected(float NewAshesCollected)
 {
-	Ashes += NewAshes;
-	OnAshesUpdated.Broadcast(Ashes);
+	AshesCollected += NewAshesCollected;
+	OnAshesUpdated.Broadcast(AshesCollected);
 }
 
 void ABurnItPlayerState::SetObjectsBurned(float NewObjectsBurned)
 {
 	ObjectsBurned += NewObjectsBurned;
 	OnObjectsBurnedUpdated.Broadcast(ObjectsBurned);
+}
+
+FRoundData ABurnItPlayerState::GetRoundData()
+{
+	FRoundData RoundData;
+	
+	RoundData.PlayerID = GetPlayerId();
+	RoundData.PlayerName = GetPlayerName();
+	RoundData.RoundTime = GetRoundTime();
+	RoundData.PlayerScore = GetPlayerScore();
+	RoundData.ObjectsBurned = GetObjectsBurned();
+	RoundData.AshesCollected = GetAshesCollected();
+	
+	return RoundData;	
 }

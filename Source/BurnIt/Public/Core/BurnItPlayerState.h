@@ -6,6 +6,30 @@
 #include "GameFramework/PlayerState.h"
 #include "BurnItPlayerState.generated.h"
 
+USTRUCT(BlueprintType)
+struct FRoundData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Round Data")
+	int32 PlayerID = 1000;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Round Data")
+	FString PlayerName = "";
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Round Data")
+	float PlayerScore = 0.f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Round Data")
+	float RoundTime = 0.f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Round Data")
+	float ObjectsBurned = 0.f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Round Data")
+	float AshesCollected = 0.f;
+};
+
 class UBurnItFlammableComponent;
 /**
  * 
@@ -31,10 +55,13 @@ class BURNIT_API ABurnItPlayerState : public APlayerState
 	float PlayerScore;
 
 	UPROPERTY()
-	float Ashes;
+	float AshesCollected;
 
 	UPROPERTY()
 	float ObjectsBurned;
+
+	UPROPERTY()
+	float RoundTime;
 
 public:
 	ABurnItPlayerState();
@@ -56,22 +83,37 @@ public:
 	/*UFUNCTION(BlueprintCallable)
 	void SetFlammableObjectData(const FFlammableObjectData NewFlammableObject) { FlammableObject = NewFlammableObject; }
 	//void SetFlammableObjectData(const FFlammableObjectData NewFlammableObject) const { FlammableComponent->SetFlammableObjectData(NewFlammableObject); }*/
+	
+	/*UFUNCTION(BlueprintCallable)
+	int32 SetPlayerID(int32 NewPlayerID) { PlayerID = NewPlayerID; };*/
 
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerScore(float NewScore);
 
 	UFUNCTION(BlueprintCallable)
-	void SetAshes(float NewAshes);
+	void SetAshesCollected(float NewAshesCollected);
 
 	UFUNCTION(BlueprintCallable)
 	void SetObjectsBurned(float NewObjectsBurned);
 	
 	UFUNCTION(BlueprintCallable)
-	int32 GetPlayerScore() const { return PlayerScore; }
+	void SetRoundTime(float NewRoundTime) { RoundTime = NewRoundTime; }
+	
+/*	UFUNCTION(BlueprintCallable)
+	FString GetPlayerName() const { return PlayerName; }*/
 	
 	UFUNCTION(BlueprintCallable)
-	int32 GetAshes() const { return Ashes; }
+	float GetPlayerScore() const { return PlayerScore; }
 	
 	UFUNCTION(BlueprintCallable)
-	int32 GetObjectsBurned() const { return ObjectsBurned; }
+	float GetRoundTime() const { return RoundTime; }
+	
+	UFUNCTION(BlueprintCallable)
+	float GetAshesCollected() const { return AshesCollected; }
+	
+	UFUNCTION(BlueprintCallable)
+	float GetObjectsBurned() const { return ObjectsBurned; }
+	
+	UFUNCTION(BlueprintCallable)
+	FRoundData GetRoundData();
 };
