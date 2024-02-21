@@ -27,8 +27,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<UBurnItUserWidget> OverlayWidget;
 
-	//UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
-
 	UFUNCTION(BlueprintCallable)
 	UBurnItUserWidget* GetOverlayWidget() const { return OverlayWidget; }
 
