@@ -74,5 +74,5 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # Whitelist only content files made by me
-Content/*
 !Content/GameData/*
+Content/*
