@@ -3,7 +3,9 @@
 
 #include "Core/BurnItPlayerState.h"
 
+#include "Data/BurnItSaveGame.h"
 #include "Component/BurnItFlammableComponent.h"
+#include "Core/BurnItGameStateBase.h"
 
 ABurnItPlayerState::ABurnItPlayerState()
 {
@@ -13,41 +15,66 @@ ABurnItPlayerState::ABurnItPlayerState()
 void ABurnItPlayerState::SetPlayerName(const FString& S)
 {
 	Super::SetPlayerName(S);
+
+	PlayerData.Name = S;
 }
 
 /*void ABurnItPlayerState::SetPlayerName(FString NewPlayerName)
 {
-	PlayerName = NewPlayerName;
+	PlayerData.PlayerName = NewPlayerName;
 }*/
+
+void ABurnItPlayerState::SetAshesCurrency(float NewAshes)
+{
+	PlayerData.AshesCurrency += NewAshes;
+	OnAshesCurrencyUpdated.Broadcast(PlayerData.AshesCurrency);
+}
+
+void ABurnItPlayerState::SetTotalObjectsBurned(float NewObject)
+{
+	PlayerData.TotalObjectsBurned += NewObject;
+	OnTotalObjectsBurnedUpdated.Broadcast(PlayerData.TotalObjectsBurned);
+}
 
 void ABurnItPlayerState::SetPlayerScore(float NewScore)
 {
-	PlayerScore += NewScore;
-	OnPlayerScoreUpdated.Broadcast(PlayerScore);
+	CurrentRoundData.PlayerScore += NewScore;
+	OnPlayerScoreUpdated.Broadcast(CurrentRoundData.PlayerScore);
 }
 
 void ABurnItPlayerState::SetAshesCollected(float NewAshesCollected)
 {
-	AshesCollected += NewAshesCollected;
-	OnAshesUpdated.Broadcast(AshesCollected);
+	CurrentRoundData.AshesCollected += NewAshesCollected;
+	OnAshesUpdated.Broadcast(CurrentRoundData.AshesCollected);
 }
 
 void ABurnItPlayerState::SetObjectsBurned(float NewObjectsBurned)
 {
-	ObjectsBurned += NewObjectsBurned;
-	OnObjectsBurnedUpdated.Broadcast(ObjectsBurned);
+	CurrentRoundData.ObjectsBurned += NewObjectsBurned;
+	OnObjectsBurnedUpdated.Broadcast(CurrentRoundData.ObjectsBurned);
+}
+
+float ABurnItPlayerState::GetGameplayTime()
+{
+	const ABurnItGameStateBase* GS = GetWorld()->GetGameState<ABurnItGameStateBase>();
+	return GS->GetGameplayTimer();
 }
 
 FRoundData ABurnItPlayerState::GetRoundData()
 {
-	FRoundData RoundData;
+	SetTotalObjectsBurned(GetObjectsBurned());
+	SetAshesCurrency(GetAshesCollected());
 	
-	RoundData.PlayerID = GetPlayerId();
-	RoundData.PlayerName = GetPlayerName();
-	RoundData.RoundTime = GetRoundTime();
-	RoundData.PlayerScore = GetPlayerScore();
-	RoundData.ObjectsBurned = GetObjectsBurned();
-	RoundData.AshesCollected = GetAshesCollected();
+	CurrentRoundData.PlayerID = GetPlayerId();
+	CurrentRoundData.PlayerName = GetPlayerName();
+	CurrentRoundData.RoundTime = GetGameplayTime();
 	
-	return RoundData;	
+	return CurrentRoundData;
+}
+
+FPlayerData ABurnItPlayerState::GetPlayerData()
+{
+	PlayerData.FlammablePlayerData = FlammableComponent->GetFlammableObjectData();
+	
+	return PlayerData;
 }

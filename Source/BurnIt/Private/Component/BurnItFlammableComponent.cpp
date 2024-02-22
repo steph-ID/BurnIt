@@ -262,7 +262,12 @@ void UBurnItFlammableComponent::SendPoints()
 	const ABurnItPlayerController* PC = Cast<ABurnItPlayerController>(GetWorld()->GetFirstPlayerController());
 	ABurnItPlayerState* PS = PC->GetPlayerState<ABurnItPlayerState>();
 	PS->SetPlayerScore(FlammableObject.PointValue);
+
+	// Record points as sent
 	bPointsSent = true;
+	
+	// Add to TotalObjectsBurned count
+	PS->SetObjectsBurned(1.f);
 }
 
 void UBurnItFlammableComponent::BeginPlay()

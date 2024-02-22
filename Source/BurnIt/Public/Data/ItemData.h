@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ItemData.generated.h"
 
-USTRUCT(Blueprintable)
+USTRUCT(BlueprintType)
 struct FFlammableObjectData
 {
 	GENERATED_BODY()
