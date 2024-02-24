@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BurnItGameStateBase.h"
 #include "Engine/GameInstance.h"
 #include "BurnItGameInstance.generated.h"
 
@@ -14,8 +15,15 @@ class BURNIT_API UBurnItGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+
 public:
 
 	UFUNCTION()
 	static FGuid GenerateGuid();
+
+	UPROPERTY(BlueprintReadOnly)
+	FOnGameStateChangedDelegate OnGameStateChanged;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateOnGameStateChange(EGameState NewGameState);
 };

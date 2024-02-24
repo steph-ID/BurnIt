@@ -79,6 +79,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetRoundTime(float NewRoundTime) { CurrentRoundData.RoundTime = NewRoundTime; }
 	
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerData(FPlayerData NewPlayerData) { PlayerData = NewPlayerData; }
+	
 /*	UFUNCTION(BlueprintCallable)
 	FString GetPlayerName() const { return PlayerName; }*/
 	

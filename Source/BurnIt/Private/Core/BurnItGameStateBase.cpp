@@ -7,6 +7,7 @@ ABurnItGameStateBase::ABurnItGameStateBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GameStartWaitTimer = GameStartCountdownDuration;
+	//GetGameInstance<UBurnItGameInstance>()->OnGameStateChanged.AddDynamic(GetGameInstance<UBurnItGameInstance>(), &UBurnItGameInstance::UpdateOnGameStateChange);
 }
 
 void ABurnItGameStateBase::PrepGameRound()
