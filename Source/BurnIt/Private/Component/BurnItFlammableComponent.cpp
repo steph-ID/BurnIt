@@ -16,9 +16,10 @@ UBurnItFlammableComponent::UBurnItFlammableComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// Set player specific variables
-	if (ABurnItPlayerState* PS = Cast<ABurnItPlayerState>(GetOwner()))
+	
+	if (PlayerStateClass)
 	{
-		PlayerState = PS;
+		//PlayerState = Cast<ABurnItPlayerState>(GetOwner());
 		bIsPlayer = true;
 		FlammableObject.CurrentTemperature = 37.f;
 	}
@@ -35,11 +36,14 @@ UBurnItFlammableComponent::UBurnItFlammableComponent()
 
 ABurnItCharacter* UBurnItFlammableComponent::GetBurnItCharacter() const
 {
-	ABurnItCharacter* Character = Cast<ABurnItCharacter>(PlayerState->GetPlayerController()->GetCharacter());
-	if (Character == nullptr)
+	const ABurnItPlayerController* PC = Cast<ABurnItPlayerController>(GetWorld()->GetFirstPlayerController());
+	ABurnItCharacter* Character = Cast<ABurnItCharacter>(PC->GetCharacter());
+	checkf(Character, TEXT("UBurnItFlammableComponent: Player character is nullptr."));
+	/*if (Character == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UBurnItFlammableComponent: Player character is nullptr."));
-	}
+	}*/
+	
 	return Character;
 }
 

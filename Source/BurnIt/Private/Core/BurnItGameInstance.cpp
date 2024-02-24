@@ -3,6 +3,7 @@
 
 #include "Core/BurnItGameInstance.h"
 
-void UBurnItGameInstance::NotifyGameStateOfFuelDepletion()
+FGuid UBurnItGameInstance::GenerateGuid()
 {
+	return FGuid::NewGuid();
 }

@@ -28,11 +28,14 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
 	bool bPointsSent = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
 	FFlammableObjectData FlammableObject;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
 	ABurnItPlayerState* PlayerState = nullptr;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Flammable Object", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ABurnItPlayerState> PlayerStateClass = nullptr;
 
 	// Chance to turn into ashen version of an object rather than to collapse into ash immediately
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Flammable Object", meta = (AllowPrivateAccess = "true"))
@@ -47,7 +50,7 @@ class BURNIT_API UBurnItFlammableComponent : public UActorComponent
 
 	// Rate at which heat is gained or lost
 	UPROPERTY(EditAnywhere, Category="Flammable Object")
-	float HeatTransferenceRate = 0.025f;
+	float HeatTransferenceRate = 0.0250f;
 
 	// Opacity of heated object overlay material
 	UPROPERTY(EditAnywhere, Category="Flammable Object")

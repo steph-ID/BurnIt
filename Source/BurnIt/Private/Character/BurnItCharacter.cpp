@@ -92,7 +92,7 @@ void ABurnItCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 	
-	SetInitialConfig();
+	//SetInitialConfig();
 }
 
 void ABurnItCharacter::SetInitialConfig()
@@ -111,7 +111,7 @@ void ABurnItCharacter::SetInitialConfig()
 			BurnItHUD->InitOverlay();
 		}
 	}*/
-	if (ABurnItHUD* HUD = Cast<ABurnItHUD>(Cast<ABurnItPlayerController>(Controller.Get())->GetHUD()))
+	if (ABurnItHUD* HUD = Cast<ABurnItHUD>(Cast<ABurnItPlayerController>(Controller)->GetHUD()))
 	{
 		HUD->InitOverlay();
 	}

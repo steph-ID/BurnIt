@@ -21,7 +21,7 @@ class BURNIT_API ABurnItPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	UBurnItFlammableComponent* FlammableComponent;
 
 	UPROPERTY()
@@ -33,7 +33,8 @@ class BURNIT_API ABurnItPlayerState : public APlayerState
 public:
 	ABurnItPlayerState();
 
-	virtual void SetPlayerName(const FString& S) override;
+	UFUNCTION(BlueprintCallable)
+	void SetDisplayName();
 
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
 	FOnAttributeUpdatedOneFloat OnAshesUpdated;

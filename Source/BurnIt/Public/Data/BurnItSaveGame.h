@@ -13,7 +13,7 @@ struct FPlayerData
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Data")
-	int32 ID;
+	int32 ID = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Data")
 	FString Name;
@@ -22,10 +22,10 @@ struct FPlayerData
 	FFlammableObjectData FlammablePlayerData;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Data")
-	float AshesCurrency;
+	float AshesCurrency = 0.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Data")
-	float TotalObjectsBurned;
+	float TotalObjectsBurned = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -33,7 +33,7 @@ struct FIgnitionDevice
 {
 	GENERATED_BODY()
 
-	int32 ID;
+	int32 ID = 1;
 	FString Name;
 };
 
@@ -66,7 +66,10 @@ struct FTrophy
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
 };
 
@@ -75,7 +78,28 @@ struct FAchievement
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Description;
+};
+
+USTRUCT(BlueprintType)
+struct FMapData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ID = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsUnlocked = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Name;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
 };
 

@@ -17,5 +17,5 @@ class BURNIT_API UBurnItGameInstance : public UGameInstance
 public:
 
 	UFUNCTION()
-	void NotifyGameStateOfFuelDepletion();
+	static FGuid GenerateGuid();
 };

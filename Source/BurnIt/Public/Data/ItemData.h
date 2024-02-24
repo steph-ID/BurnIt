@@ -11,7 +11,7 @@ struct FFlammableObjectData
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
-	float Health;
+	float Health = 0.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Flammable Object")
 	float MaxHealth = 100.f;
