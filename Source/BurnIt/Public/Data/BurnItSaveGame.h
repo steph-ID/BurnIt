@@ -67,6 +67,9 @@ struct FTrophy
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ID = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -74,15 +77,21 @@ struct FTrophy
 };
 
 USTRUCT(BlueprintType)
-struct FAchievement
+struct FAchievement : public FTableRowBase
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ID = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxCountToUnlock = 1;
 };
 
 USTRUCT(BlueprintType)
@@ -92,9 +101,6 @@ struct FMapData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ID = 1;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsUnlocked = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
