@@ -12,9 +12,9 @@ ABurnItPlayerState::ABurnItPlayerState()
 	FlammableComponent = CreateDefaultSubobject<UBurnItFlammableComponent>(TEXT("FlammableComponent"));
 }
 
-void ABurnItPlayerState::SetDisplayName()
+void ABurnItPlayerState::SetDisplayName(FString NewName)
 {
-	PlayerData.Name = GetPlayerName();
+	PlayerData.Name = NewName;
 }
 
 /*void ABurnItPlayerState::SetPlayerName(FString NewPlayerName)

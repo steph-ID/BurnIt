@@ -34,7 +34,7 @@ public:
 	ABurnItPlayerState();
 
 	UFUNCTION(BlueprintCallable)
-	void SetDisplayName();
+	void SetDisplayName(FString NewName);
 
 	UPROPERTY(BlueprintAssignable, Category="Burn It|HUD Update Events")
 	FOnAttributeUpdatedOneFloat OnAshesUpdated;
